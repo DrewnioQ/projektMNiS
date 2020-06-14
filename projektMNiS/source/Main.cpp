@@ -22,6 +22,7 @@ public:
       }
     }
   }
+  
   matrix() : wiersze(liczba), kolumny(liczba) {
     tablica = new double* [wiersze];
     for (int j = 0; j < wiersze; j++) {
@@ -34,7 +35,7 @@ public:
       }
     }
   }
-
+  
   void wprowadz_dane(char matrixName)
   {
     cout << "Wprowadz dane macierzy " << matrixName << endl;
