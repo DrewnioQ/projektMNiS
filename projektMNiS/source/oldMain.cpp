@@ -47,7 +47,7 @@ public:
     }
     cout << endl;
   }
-
+  
   friend void operator+=(matrix& obj, matrix obj2);
   friend void operator-=(matrix& obj, matrix obj2);
   friend void operator*=(matrix& obj, matrix obj2);
@@ -62,7 +62,7 @@ public:
   friend void operator++(matrix& obj, int);
   friend void operator--(matrix& obj);
   friend void operator--(matrix& obj, int);
-
+  
 };
 
 
@@ -255,8 +255,12 @@ int main()
   matrix z;
   z = a + b;
   cout << z;
-  a + 2;
-  cout << a;
+  z = a - b;
+  cout << z;
+  z = a * b;
+  cout << z;
+  z = a / b;
+  cout << z;
 
   return 0;
 }
