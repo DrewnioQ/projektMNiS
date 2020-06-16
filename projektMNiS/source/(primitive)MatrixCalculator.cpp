@@ -3,6 +3,8 @@
 using namespace std;
 
 int rozmiarMacierzy = 0;
+int matrixNum = 0;
+double userNum = 0.0;
 char operationSymbol;
 
 class matrix
@@ -29,7 +31,7 @@ public:
     // funkcja wpisujaca zadane wartosci macierzy do tablic
     void fillMatrix(char matrixName) {
         cout << endl;
-        cout << "Wprowadz dane macierzy " << matrixName << endl;
+        cout << "[ Wprowadz dane macierzy " << matrixName << " ]" << endl;
 
         for (int i = 0; i < wiersze; i++) {
             for (int j = 0; j < kolumny; j++) {
@@ -53,9 +55,6 @@ public:
     friend void operator-(matrix& obj, double wartosc);
     friend void operator*(matrix& obj, double wartosc);
     //friend void operator/(matrix& obj, double wartosc);
-
-    friend void getMatrixData();
-    friend void displayMatrixResult(matrix& A, matrix& B, matrix& C);
 };
 
  // operatory przeladowania; do macierzy po lewej stronie jest dodawana macierz po prawej
@@ -123,19 +122,15 @@ matrix operator*(const matrix& obj, const matrix& obj2)
     return Z;
 }
 
-// dzialania na macierzach z skalarami np. A + 2; B * 5;
+// dzialania na macierzach ze skalarami np. A + 2; B * 5;
 void operator+(matrix& obj, double wartosc) {
     for (int i = 0; i < rozmiarMacierzy; i++) {
-        for (int j = 0; j < rozmiarMacierzy; j++) {
-            obj.tablica[i][j] += wartosc;
-        }
+        obj.tablica[i][i] += wartosc;
     }
 }
 void operator-(matrix& obj, double wartosc) {
     for (int i = 0; i < rozmiarMacierzy; i++) {
-        for (int j = 0; j < rozmiarMacierzy; j++) {
-            obj.tablica[i][j] -= wartosc;
-        }
+        obj.tablica[i][i] -= wartosc;
     }
 }
 void operator*(matrix& obj, double wartosc) {
@@ -179,27 +174,148 @@ ostream& operator<< (ostream& out, matrix obj)
 
  // funkcja pozyskujaca dane o macierzach od uzytkownika oraz zadane operacje na macierzach
 void getMatrixData() {
-    cout << ">>> Wprowadz rozmiar macierzy kwadratowych (1, 2, 3, ...): ";
-    cin >> rozmiarMacierzy;
-
     bool symbolError = true;
-    while (symbolError == true) {
-        cout << ">>> Wprowadz symbol operacji matematycznej (+, -, *): ";
-        cin >> operationSymbol;
-        
-        if (operationSymbol == '+' || operationSymbol == '-' || operationSymbol == '*') {
+    while (symbolError == true)
+    {
+        cout << ">>> Na ilu macierzach chcesz wykonywac dzialania? [1/2]: ";
+        cin >> matrixNum;
+
+        if (matrixNum == 1 || matrixNum == 2) {
+            symbolError = false;
+            break;
+        } 
+        else {
+            cout << "[NIEPRAWIDLOWA WARTOSC!]";
+            cout << endl;
+        }     
+    }
+
+    symbolError = true;
+    while (symbolError == true)
+    {
+        cout << ">>> Wprowadz rozmiar macierzy kwadratowej/ych (1, 10): ";
+        cin >> rozmiarMacierzy;
+
+        if (rozmiarMacierzy >= 1 && rozmiarMacierzy <= 10) {
             symbolError = false;
             break;
         }
         else {
-            cout << "[NIEPRAWIDLOWY SYMBOL!]";
+            cout << "[NIEPRAWIDLOWA WARTOSC!]";
             cout << endl;
         }
     }
-}
+   
+    symbolError = true;
+    while (symbolError == true) {
+        if (matrixNum == 1) {
+            cout << ">>> Wprowadz symbol operacji matematycznej ( +, -, *, ^-1, w ): ";
+            cin >> operationSymbol;
 
- // funkcja wyswietlajaca wyniki operacji matematycznej zgodnie z zadanym symbolem
-void displayMatrixResult( matrix& A, matrix& B, matrix& C ) {
+            if (operationSymbol == '+' || operationSymbol == '-' || operationSymbol == '*' || operationSymbol == '^' || operationSymbol == 'w') {
+                
+                // funkcja pobierajaca od uzytkownika liczbe do operacji na macierzy A
+                cout << ">>> Wprowadz liczbe uzywana do operacji na macierzy: ";
+                cin >> userNum;
+
+                symbolError = false;
+                break;
+            }
+            else {
+                cout << "[NIEPRAWIDLOWY SYMBOL!]";
+                cout << endl;
+            }
+        } 
+        else if (matrixNum == 2) {
+            {
+                cout << ">>> Wprowadz symbol operacji matematycznej ( +, -, * ): ";
+                cin >> operationSymbol;
+
+                if (operationSymbol == '+' || operationSymbol == '-' || operationSymbol == '*') {
+                    symbolError = false;
+                    break;
+                }
+                else {
+                    cout << "[NIEPRAWIDLOWY SYMBOL!]";
+                    cout << endl;
+                }
+            }
+        }
+    }
+};
+
+ // funkcja wyliczajaca wyznacznik macierzy
+double determinant(int matrix[10][10], int n) {
+    double det = 0;
+    int submatrix[10][10];
+    if (n == 2)
+        return ((matrix[0][0] * matrix[1][1]) - (matrix[1][0] * matrix[0][1]));
+    else {
+        for (int x = 0; x < n; x++) {
+            int subi = 0;
+            for (int i = 1; i < n; i++) {
+                int subj = 0;
+                for (int j = 0; j < n; j++) {
+                    if (j == x)
+                        continue;
+                    submatrix[subi][subj] = matrix[i][j];
+                    subj++;
+                }
+                subi++;
+            }
+            det = det + (pow(-1, x) * matrix[0][x] * determinant(submatrix, n - 1));
+        }
+    }
+    return det;
+};
+
+ // funkcja pozwalajaca na obliczenia na dwoch macierzach
+void operationOnTwoMatrices() {
+    matrix A;
+    A.fillMatrix('A');
+
+    matrix B;
+    B.fillMatrix('B');
+
+    matrix C;
+
+    // funkcja wyswietlajaca wyniki operacji matematycznej zgodnie z zadanym symbolem
+    switch (operationSymbol)
+    {
+        default:
+            cout << endl;
+            cout << "[NIEPRAWIDLOWY SYMBOL!]";
+            break;
+        case '+':
+            cout << endl;
+            cout << "A =" << A;
+            cout << "B = " << B;
+            cout << "A + B =" << A + B;
+            break;
+        case '-':
+            cout << endl;
+            cout << "A - B =" << A - B;
+            cout << endl;
+            cout << "B - A =" << B - A;
+            break;
+        case '*':
+            C = A * B;
+            cout << endl;
+            cout << "A * B =" << C;
+            C = B * A;
+            cout << endl;
+            cout << "B * A =" << C;
+            break;
+    }
+};
+
+ // funkcja pozwalajac na operacje na jednej macierzy
+void operationOnOneMatrix() {
+    matrix A;
+    A.fillMatrix('A');
+
+    matrix C;
+
     switch (operationSymbol)
     {
     default:
@@ -207,47 +323,62 @@ void displayMatrixResult( matrix& A, matrix& B, matrix& C ) {
         cout << "[NIEPRAWIDLOWY SYMBOL!]";
         break;
     case '+':
-        C = A + B;
         cout << endl;
-        cout << "A + B =" << A + B;
+        cout << "A =" << A << endl;
+        cout << "Liczba = " << userNum << endl << endl;
+        A + userNum;
+        cout << "A + " << userNum << " =" << A << endl;
         break;
     case '-':
         cout << endl;
-        cout << "A - B =" << A - B;
-        cout << endl;
-        cout << "B - A =" << B - A;
+        cout << "A =" << A << endl;
+        cout << "Liczba = " << userNum << endl << endl;
+        A - userNum;
+        cout << "A - " << userNum << " =" << A << endl;
         break;
     case '*':
-        C = A * B;
         cout << endl;
-        cout << "A * B =" << C;
-        C = B * A;
+        cout << "A =" << A << endl;
+        cout << "Liczba = " << userNum << endl << endl;
+        A * userNum;
+        cout << "A * " << userNum << " =" << A << endl;
+        break;
+    case '^':
         cout << endl;
-        cout << "B * A =" << C;
+        
+        cout << "det(A) =" << determinant(rozmiarMacierzy);
+        cout << endl;
+        //cout << "B - A =" << B - A;
+        break;
+    case 'w':
+        cout << endl;
+        //cout << "A - B =" << A - B;
+        cout << endl;
+        //cout << "B - A =" << B - A;
         break;
     }
 }
 
 int main()
 {
-     // petla glownego programu
+    // petla glownego programu
 
     char continueProgram = 'Y';
     while (continueProgram == 'Y' || continueProgram == 'y') {
         getMatrixData();
+        
+        if (matrixNum == 1) {
+            operationOnOneMatrix();
+        }
+        else if (matrixNum == 2) {
+            operationOnTwoMatrices();
+        }
 
-        matrix A;
-        A.fillMatrix('A');
+        cout << endl;
 
-        matrix B;
-        B.fillMatrix('B');
-
-        matrix C;
-
-        displayMatrixResult(A, B, C);
-
-        cout << "Do you want to calculate again? [Y/N]: ";
+        cout << "Czy chcesz ponownie uzyc kalkulatora? [Y/N]: ";
         cin >> continueProgram;
+
         cout << endl;
     }
 };
