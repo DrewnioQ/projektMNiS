@@ -40,7 +40,32 @@ public:
             }
         }
     }
-
+/*
+    // funkcja wyliczajaca wyznacznik macierzy
+    double determinant(int matrix[10][10], int n) {
+        double det = 0;
+        int submatrix[10][10];
+        if (n == 2)
+            return ((matrix[0][0] * matrix[1][1]) - (matrix[1][0] * matrix[0][1]));
+        else {
+            for (int x = 0; x < n; x++) {
+                int subi = 0;
+                for (int i = 1; i < n; i++) {
+                    int subj = 0;
+                    for (int j = 0; j < n; j++) {
+                        if (j == x)
+                            continue;
+                        submatrix[subi][subj] = matrix[i][j];
+                        subj++;
+                    }
+                    subi++;
+                }
+                det = det + (pow(-1, x) * matrix[0][x] * determinant(submatrix, n - 1));
+            }
+        }
+        return det;
+    };
+*/
     friend ostream& operator<< (ostream& out, matrix obj);
 
     friend void operator+=(matrix& obj, const matrix& obj2);
@@ -122,7 +147,7 @@ matrix operator*(const matrix& obj, const matrix& obj2)
     return Z;
 }
 
-// dzialania na macierzach ze skalarami np. A + 2; B * 5;
+// dzialania na macierzach ze skalarami np. A + 2; A * 5;
 void operator+(matrix& obj, double wartosc) {
     for (int i = 0; i < rozmiarMacierzy; i++) {
         obj.tablica[i][i] += wartosc;
@@ -209,15 +234,15 @@ void getMatrixData() {
     symbolError = true;
     while (symbolError == true) {
         if (matrixNum == 1) {
-            cout << ">>> Wprowadz symbol operacji matematycznej ( +, -, *, ^-1, w ): ";
+            cout << ">>> Wprowadz symbol operacji matematycznej ( +, -, * ): ";
             cin >> operationSymbol;
 
-            if (operationSymbol == '+' || operationSymbol == '-' || operationSymbol == '*' || operationSymbol == '^' || operationSymbol == 'w') {
+            if (operationSymbol == '+' || operationSymbol == '-' || operationSymbol == '*') {
                 
                 // funkcja pobierajaca od uzytkownika liczbe do operacji na macierzy A
                 cout << ">>> Wprowadz liczbe uzywana do operacji na macierzy: ";
                 cin >> userNum;
-
+                
                 symbolError = false;
                 break;
             }
@@ -242,31 +267,6 @@ void getMatrixData() {
             }
         }
     }
-};
-
- // funkcja wyliczajaca wyznacznik macierzy
-double determinant(int matrix[10][10], int n) {
-    double det = 0;
-    int submatrix[10][10];
-    if (n == 2)
-        return ((matrix[0][0] * matrix[1][1]) - (matrix[1][0] * matrix[0][1]));
-    else {
-        for (int x = 0; x < n; x++) {
-            int subi = 0;
-            for (int i = 1; i < n; i++) {
-                int subj = 0;
-                for (int j = 0; j < n; j++) {
-                    if (j == x)
-                        continue;
-                    submatrix[subi][subj] = matrix[i][j];
-                    subj++;
-                }
-                subi++;
-            }
-            det = det + (pow(-1, x) * matrix[0][x] * determinant(submatrix, n - 1));
-        }
-    }
-    return det;
 };
 
  // funkcja pozwalajaca na obliczenia na dwoch macierzach
@@ -294,16 +294,20 @@ void operationOnTwoMatrices() {
             break;
         case '-':
             cout << endl;
-            cout << "A - B =" << A - B;
+            cout << "A =" << A;
+            cout << "B = " << B;
             cout << endl;
+            cout << "A - B =" << A - B;
             cout << "B - A =" << B - A;
             break;
         case '*':
-            C = A * B;
             cout << endl;
+            cout << "A =" << A;
+            cout << "B = " << B;
+            cout << endl;
+            C = A * B;
             cout << "A * B =" << C;
             C = B * A;
-            cout << endl;
             cout << "B * A =" << C;
             break;
     }
@@ -343,19 +347,14 @@ void operationOnOneMatrix() {
         A * userNum;
         cout << "A * " << userNum << " =" << A << endl;
         break;
+/*
     case '^':
         cout << endl;
-        
-        cout << "det(A) =" << determinant(rozmiarMacierzy);
-        cout << endl;
-        //cout << "B - A =" << B - A;
+        cout << "det(A) =" << A.determinant(A, rozmiarMacierzy);
         break;
     case 'w':
-        cout << endl;
-        //cout << "A - B =" << A - B;
-        cout << endl;
-        //cout << "B - A =" << B - A;
         break;
+*/
     }
 }
 
