@@ -13,6 +13,7 @@ private:
     int kolumny = 0;
     int wiersze = 0;
     double** tablica;
+    double wyznacznik = 0;
 public:
     // konstruktor macierzy
     matrix() : wiersze(rozmiarMacierzy), kolumny(rozmiarMacierzy) {
@@ -40,8 +41,42 @@ public:
             }
         }
     }
+    
+    // funkcja wyliczajaca wyznacznik macierzy ( dziala tylko dla macierzy max 3x3 :( )
+    double determinant() {
+
+        if (rozmiarMacierzy == 2) {
+            wyznacznik = tablica[0][0];
+        }
+        else if (rozmiarMacierzy == 2) {
+            wyznacznik = ((tablica[0][0] * tablica[1][1]) - (tablica[1][0] * tablica[0][1]));
+        }
+        else if (rozmiarMacierzy == 3) {
+            wyznacznik = (tablica[0][0] * (tablica[1][1] * tablica[2][2] - tablica[1][2] * tablica[2][1])) - (tablica[0][1] * (tablica[1][0] * tablica[2][2] - tablica[1][2] * tablica[2][0])) + (tablica[0][2] * (tablica[1][0] * tablica[2][1] - tablica[1][1] * tablica[2][0]));
+        }
+        else {
+            cout << "[det(A) ERROR]" << endl;
+        }
+        return wyznacznik;
+    };
+
+    
 /*
-    // funkcja wyliczajaca wyznacznik macierzy
+    void transpozycja() {
+        double Z[rozmiarMacierzy][rozmiarMacierzy];
+        for (int i = 0; i < rozmiarMacierzy; ++i) {
+            for (int j = 0; j < rozmiarMacierzy; ++j) {
+                Z[j][i] = tablica[i][j];
+            }
+        }
+        for (int i = 0; i < rozmiarMacierzy; ++i) {
+            for (int j = 0; j < rozmiarMacierzy; ++j) {
+                tablica[i][j] = Z[i][j];
+            }
+        }
+    }
+
+    
     double determinant(int matrix[10][10], int n) {
         double det = 0;
         int submatrix[10][10];
@@ -234,10 +269,10 @@ void getMatrixData() {
     symbolError = true;
     while (symbolError == true) {
         if (matrixNum == 1) {
-            cout << ">>> Wprowadz symbol operacji matematycznej ( +, -, * ): ";
+            cout << ">>> Wprowadz symbol operacji matematycznej ( +, -, *, w ): ";
             cin >> operationSymbol;
 
-            if (operationSymbol == '+' || operationSymbol == '-' || operationSymbol == '*') {
+            if (operationSymbol == '+' || operationSymbol == '-' || operationSymbol == '*' || operationSymbol == 'w') {
                 
                 // funkcja pobierajaca od uzytkownika liczbe do operacji na macierzy A
                 cout << ">>> Wprowadz liczbe uzywana do operacji na macierzy: ";
@@ -349,12 +384,16 @@ void operationOnOneMatrix() {
         break;
 /*
     case '^':
-        cout << endl;
-        cout << "det(A) =" << A.determinant(A, rozmiarMacierzy);
-        break;
-    case 'w':
+        
         break;
 */
+    case 'w':
+        cout << endl;
+        cout << "A =" << A << endl;
+        cout << "Wyznacznik A = " << A.determinant();
+        cout << endl;
+
+        break;
     }
 }
 
